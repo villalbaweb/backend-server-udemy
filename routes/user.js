@@ -3,6 +3,9 @@ var app = express();
 
 var Usuario = require('../models/usuario');
 
+//==========================================================
+//              Obtener lista de usuarios
+//==========================================================
 app.get('/', (req, res, next) => {
     
     Usuario.find({ }, 'nombre email img role')
@@ -21,6 +24,22 @@ app.get('/', (req, res, next) => {
             usuarios: usuarios
         });
     });
+});
+
+//==========================================================
+//              Guardar nuevo usuario
+//==========================================================
+app.post('/', (req, res) => {
+
+    // retrieving request's body using body-parser
+    var body = req.body;
+
+    res.status(200)
+    .json({
+        ok: true,
+        body: body
+    });
+
 });
 
 module.exports = app;
