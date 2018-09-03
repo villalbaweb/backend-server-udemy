@@ -34,12 +34,28 @@ app.post('/', (req, res) => {
     // retrieving request's body using body-parser
     var body = req.body;
 
-    res.status(200)
-    .json({
-        ok: true,
-        body: body
+    var ususario = new Usuario( {
+        nombre: body.nombre,
+        email: body.email,
+        password: body.password,
+        img: body.img,
+        role: body.role
     });
+    ususario.save((err, usuarioGuardado) => {
+        if(err) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al crear usuario',
+                errors: err
+            });
+        }
 
+        res.status(200)
+        .json({
+            ok: true,
+            ususario: usuarioGuardado
+        });
+    });
 });
 
 module.exports = app;
