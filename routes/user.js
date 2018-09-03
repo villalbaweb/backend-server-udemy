@@ -5,12 +5,12 @@ var Usuario = require('../models/usuario');
 
 app.get('/', (req, res, next) => {
     
-    Usuario.find({ },
-    (err, usuarios) => {
+    Usuario.find({ }, 'nombre email img role')
+    .exec((err, usuarios) => {
         if(err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'Error cargando ususariarios',
+                mensaje: 'Error cargando usuarios',
                 errors: err
             });
         }
