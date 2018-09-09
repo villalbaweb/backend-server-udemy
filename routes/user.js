@@ -29,6 +29,19 @@ app.get('/', (req, res, next) => {
 });
 
 //==========================================================
+//              Acrualizar usuario
+//==========================================================
+app.put('/:id', (req, res) => {
+
+    var id = req.params.id;
+    res.status(200)
+    .json({
+        ok: true,
+        mensaje: `Actualizando usuario con id ${id}`
+    });
+});
+
+//==========================================================
 //              Guardar nuevo usuario
 //==========================================================
 app.post('/', (req, res) => {
