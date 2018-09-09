@@ -34,11 +34,48 @@ app.get('/', (req, res, next) => {
 app.put('/:id', (req, res) => {
 
     var id = req.params.id;
-    res.status(200)
-    .json({
-        ok: true,
-        mensaje: `Actualizando usuario con id ${id}`
+    var body = req.body;
+
+    Usuario.findById(id, (error, usuario) => {
+        if(error) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al buscar usuario',
+                errors: error
+            });
+        }
+
+        if(!usuario) {
+            return res.status(400)
+            .json({
+                ok: false,
+                mensaje: 'Error al buscar usuario',
+                errors: { mensaje: `El usuario id: ${id} no existe` }
+            });
+        } 
+
+        usuario.nombre = body.nombre;
+        usuario.email = body.email;
+        usuario.role = body.role;
+
+        usuario.save((err, usuarioGuardado) => {
+            if(err) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al actualizar usuario',
+                    errors: err
+                });
+            }
+    
+            return res.status(200)
+            .json({
+                ok: true,
+                usuario: usuarioGuardado
+            });
+        });
+
     });
+
 });
 
 //==========================================================
@@ -49,14 +86,14 @@ app.post('/', (req, res) => {
     // retrieving request's body using body-parser
     var body = req.body;
 
-    var ususario = new Usuario( {
+    var usuario = new Usuario( {
         nombre: body.nombre,
         email: body.email,
         password: body.password ? bcrypt.hashSync(body.password, 10) : null,
         img: body.img,
         role: body.role
     });
-    ususario.save((err, usuarioGuardado) => {
+    usuario.save((err, usuarioGuardado) => {
         if(err) {
             return res.status(400).json({
                 ok: false,
@@ -68,7 +105,7 @@ app.post('/', (req, res) => {
         res.status(200)
         .json({
             ok: true,
-            ususario: usuarioGuardado
+            usuario: usuarioGuardado
         });
     });
 });
