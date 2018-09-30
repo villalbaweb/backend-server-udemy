@@ -1,9 +1,7 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
 
-var JWTSecret = require('../config/config').SEED;    // secret para validar JWT
-
+var mdAuthentication = require('../middlewares/authentication');
 
 var app = express();
 
@@ -32,32 +30,11 @@ app.get('/', (req, res, next) => {
     });
 });
 
-//==========================================================
-//              Verificar JWT
-// This goes here to block every request that follows this point
-//==========================================================
-app.use('/', (req, res, next) => {
-
-    var token = req.query.token;
-
-    jwt.verify( token, JWTSecret, (err, decoded) => {
-        if(err) {
-            return res.status(401).json({
-                ok: false,
-                mensaje: 'JWT invalid token',
-                errors: err
-            });
-        }
-
-        next(); // allow the current request to pass trough
-    });
-
-});
 
 //==========================================================
 //              Acrualizar usuario
 //==========================================================
-app.put('/:id', (req, res) => {
+app.put('/:id', mdAuthentication.verificaToken, (req, res) => {
 
     var id = req.params.id;
     var body = req.body;
@@ -96,7 +73,8 @@ app.put('/:id', (req, res) => {
             return res.status(200)
             .json({
                 ok: true,
-                usuario: usuarioGuardado
+                usuario: usuarioGuardado,
+                requestSource: req.requestFrom
             });
         });
 
@@ -107,7 +85,7 @@ app.put('/:id', (req, res) => {
 //==========================================================
 //              Guardar nuevo usuario
 //==========================================================
-app.post('/', (req, res) => {
+app.post('/', mdAuthentication.verificaToken ,(req, res) => {
 
     // retrieving request's body using body-parser
     var body = req.body;
@@ -131,7 +109,8 @@ app.post('/', (req, res) => {
         res.status(200)
         .json({
             ok: true,
-            usuario: usuarioGuardado
+            usuario: usuarioGuardado,
+            requestSource: req.requestFrom
         });
     });
 });
@@ -139,7 +118,7 @@ app.post('/', (req, res) => {
 //==========================================================
 //              Eliminar usuario
 //==========================================================
-app.delete('/:id', (req, res) => {
+app.delete('/:id', mdAuthentication.verificaToken, (req, res) => {
     var id = req.params.id;
     //var body = req.body;
 
@@ -164,7 +143,8 @@ app.delete('/:id', (req, res) => {
         return res.status(200)
             .json({
                 ok: true,
-                usuarioEliminado: usuarioBorrado
+                usuarioEliminado: usuarioBorrado,
+                requestSource: req.requestFrom
             });
 
     });   
