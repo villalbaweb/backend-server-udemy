@@ -36,11 +36,13 @@ app.post('/', (req, res) => {
                 errors: err
             }); 
         }
+
+        // usuario existe y entro password correcto, generar JWT 
         
         res.status(200).json({
             ok: true,
-            body: body,
-            message: 'Login response'
+            usuario: usuarioDB,
+            id: usuarioDB.id
         });
 
     });
