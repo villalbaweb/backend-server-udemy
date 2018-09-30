@@ -1,5 +1,9 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+
+var JWTSecret = require('../config/config').SEED;    // secret para validar JWT
+
 
 var app = express();
 
@@ -26,6 +30,28 @@ app.get('/', (req, res, next) => {
             usuarios: usuarios
         });
     });
+});
+
+//==========================================================
+//              Verificar JWT
+// This goes here to block every request that follows this point
+//==========================================================
+app.use('/', (req, res, next) => {
+
+    var token = req.query.token;
+
+    jwt.verify( token, JWTSecret, (err, decoded) => {
+        if(err) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'JWT invalid token',
+                errors: err
+            });
+        }
+
+        next(); // allow the current request to pass trough
+    });
+
 });
 
 //==========================================================

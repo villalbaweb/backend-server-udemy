@@ -2,6 +2,8 @@ var express = require('express');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
+var JWTSecret = require('../config/config').SEED;    // secret para validar JWT
+
 var app = express();
 
 var Usuario = require('../models/usuario');
@@ -39,13 +41,12 @@ app.post('/', (req, res) => {
         }
 
         // usuario existe y entro password correcto, generar JWT
-        var secret = '@this@is@a@seed';
         usuarioDB.password = ':-)';
         var token = jwt.sign(
             { 
                 usuario: usuarioDB 
             }, 
-            secret, 
+            JWTSecret, 
             { 
                 expiresIn: 14400 
             }
