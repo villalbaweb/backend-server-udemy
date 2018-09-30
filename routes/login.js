@@ -1,5 +1,6 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
 
 var app = express();
 
@@ -37,10 +38,23 @@ app.post('/', (req, res) => {
             }); 
         }
 
-        // usuario existe y entro password correcto, generar JWT 
-        
+        // usuario existe y entro password correcto, generar JWT
+        var secret = '@this@is@a@seed';
+        usuarioDB.password = ':-)';
+        var token = jwt.sign(
+            { 
+                usuario: usuarioDB 
+            }, 
+            secret, 
+            { 
+                expiresIn: 14400 
+            }
+        ); //expira en 4 horas
+
+
         res.status(200).json({
             ok: true,
+            token: token,
             usuario: usuarioDB,
             id: usuarioDB.id
         });
