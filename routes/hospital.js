@@ -31,4 +31,36 @@ app.get('/', (req, res, next) => {
     });
 });
 
+//==========================================================
+//              Guardar nuevo hospital
+//==========================================================
+app.post('/', mdAuthentication.verificaToken , (req, res) => {
+    var body = req.body;
+
+    var hospital = new Hospital({
+        nombre: body.nombre,
+        img: body.img,
+        usuario: body.usuarioId
+    });
+
+    hospital.save((error, hospitalGuardado) => {
+
+        if(error) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Error al crear el hospital',
+                errors: error
+            });
+        }
+
+        res.status(200)
+        .json({
+            ok: true,
+            hospital: hospital,
+            requestSource: req.requestFrom
+        })
+    });
+});
+
+
 module.exports = app;
