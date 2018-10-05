@@ -31,6 +31,54 @@ app.get('/', (req, res, next) => {
     });
 });
 
+
+//==========================================================
+//              Acrualizar hospital
+//==========================================================
+app.put('/:id', mdAuthentication.verificaToken, (req, res) => {
+
+    var id = req.params.id;
+    var body = req.body;
+
+    Hospital.findById(id, (error, hospital) => {
+        if(error) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al buscar hospital',
+                errors: error
+            });
+        }
+
+        if(!hospital) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Error al buscar hospital',
+                errors: { mensaje: `El hospital id: ${id} no existe`}
+            });
+        }
+
+        hospital.nombre = body.nombre;
+        hospital.img = body.image;
+        hospital.usuario = body.usuario;
+
+        hospital.save((error, hospitalActualizado) => {
+            if(error) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al actualizar hospital',
+                    errors: error
+                });
+            }
+
+            return res.status(200).json({
+                ok: true,
+                hospital: hospitalActualizado,
+                requestSource: req.requestFrom
+            });
+        });
+    });
+});
+
 //==========================================================
 //              Guardar nuevo hospital
 //==========================================================
