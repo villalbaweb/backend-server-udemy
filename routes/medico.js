@@ -62,4 +62,37 @@ app.post('/', mdAuthentication.verificaToken, (req, res) => {
 });
 
 
+//==========================================================
+//              Eliminar hospital
+//==========================================================
+app.delete('/:id', mdAuthentication.verificaToken, (req, res) => {
+    var id = req.params.id;
+
+    Medico.findByIdAndRemove(id, (error, medicoBorrado) => {
+        if(error) {
+            return res.status(500),json({
+
+                ok: false,
+                mensaje: 'Error al eliminar medico',
+                errors: error
+            });
+        }
+
+        if(!medicoBorrado) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Error al eliminar medico',
+                errors: { mensaje: `El medico id: ${id} no existe`}
+            });
+        }
+
+        return res.status(200).json({
+            ok: true,
+            medicoEliminado: medicoBorrado,
+            requestSource: req.requestFrom
+        });
+    });
+});
+
+
 module.exports = app;
