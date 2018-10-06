@@ -31,6 +31,54 @@ app.get('/', (req, res) => {
 
 
 //==========================================================
+//              Acrualizar hospital
+//==========================================================
+app.put('/:id', mdAuthentication.verificaToken, (req, res) => {
+    var id = req.params.id;
+    var body = req.body;
+
+    Medico.findById(id, (error, medico) => {
+        if(error) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al buscar medico',
+                errors: error
+            });
+        }
+
+        if(!medico) {
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Error al buscar medico',
+                errors: { mensaje: `El medico id: ${id} no existe`}
+            });
+        }
+
+        medico.nombre = body.nombre;
+        medico.img = body.img;
+        medico.usuario = body.usuario;
+        medico.hospital = body.hospital;
+
+        medico.save((error, medicoActualizado) => {
+            if(error) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al actualizar hospital',
+                    errors: error
+                });
+            }
+
+            return res.status(200).json({
+                ok: true,
+                medico: medicoActualizado,
+                requestRource: req.requestFrom
+            });
+        });
+    });
+});
+
+
+//==========================================================
 //              Guardar nuevo medico
 //==========================================================
 app.post('/', mdAuthentication.verificaToken, (req, res) => {
