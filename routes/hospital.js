@@ -16,7 +16,7 @@ app.get('/', (req, res, next) => {
     .exec((error, hospitales) => {
 
         if(error) {
-            res.status(500),json({
+            return res.status(500).json({
                 ok: false,
                 mensaje: 'Error cargando hospitales',
                 errors: error
