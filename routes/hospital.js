@@ -104,9 +104,9 @@ app.post('/', mdAuthentication.verificaToken , (req, res) => {
         res.status(200)
         .json({
             ok: true,
-            hospital: hospital,
+            hospital: hospitalGuardado,
             requestSource: req.requestFrom
-        })
+        });
     });
 });
 
