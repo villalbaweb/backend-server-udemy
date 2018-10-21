@@ -27,11 +27,24 @@ app.get('/', (req, res, next) => {
             });
         }
 
-        res.status(200)
-        .json({
-            ok: true,
-            usuarios: usuarios
+        Usuario.count({}, (err, count) => {
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error contando usuarios',
+                    errors: err
+                });
+            }
+            
+            res.status(200)
+            .json({
+                ok: true,
+                totalRecords: count,
+                usuarios: usuarios
+            });
+
         });
+
     });
 });
 
