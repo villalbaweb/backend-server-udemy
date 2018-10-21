@@ -40,7 +40,7 @@ function busquedaHospitales(regex) {
 
 function busquedaMedicos(regex) {
     return new Promise((resolve, reject) => {
-        Usuario.find({nombre: regex}, (err, medicos) => {
+        Medico.find({nombre: regex}, (err, medicos) => {
             if(err){
                 reject('Error al cargar medicos', err);
             } else {
@@ -53,7 +53,7 @@ function busquedaMedicos(regex) {
 function busquedaUsuarios(regex) {
     return new Promise((resolve, reject) => {
         Usuario
-        .find()
+        .find({}, 'nombre email role')
         .or([{'nombre': regex}, {'email': regex}])
         .exec((err, usuario)=> {
             if(err){
