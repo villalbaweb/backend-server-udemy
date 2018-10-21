@@ -11,8 +11,13 @@ var Usuario = require('../models/usuario');
 //              Obtener lista de usuarios
 //==========================================================
 app.get('/', (req, res, next) => {
+
+    var skip = +req.query.skip || 0;
+    var take = +req.query.take || 0;
     
     Usuario.find({ }, 'nombre email img role')
+    .skip(skip)
+    .limit(take)
     .exec((err, usuarios) => {
         if(err) {
             return res.status(500).json({
