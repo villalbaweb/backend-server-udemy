@@ -11,7 +11,13 @@ var Medico = require('../models/medico');
 //              Obtener lista de medicos
 //==========================================================
 app.get('/', (req, res) => {
+
+    var skip = +req.query.skip || 0;
+    var take = +req.query.take || 0;
+
     Medico.find( { }, 'nombre img usuario hospital')
+    .skip(skip)
+    .limit(take)
     .populate('usuario', 'nombre email')
     .populate('hospital')
     .exec((error, medicos) => {
@@ -23,11 +29,24 @@ app.get('/', (req, res) => {
             });
         }
 
-        return res.status(200)
-        .json({
-            ok: true,
-            medicos: medicos
-        })
+        Medico.count({}, (err, count) => {
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error contando medicos',
+                    errors: err
+                });
+            }
+            
+            res.status(200)
+            .json({
+                ok: true,
+                totalRecords: count,
+                medicos: medicos
+            });
+
+        });
+
     });
 });
 

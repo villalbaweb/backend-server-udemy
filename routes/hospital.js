@@ -12,7 +12,12 @@ var Hospital = require('../models/hospital');
 //==========================================================
 app.get('/', (req, res, next) => {
 
+    var skip = +req.query.skip || 0;
+    var take = +req.query.take || 0;
+
     Hospital.find( { }, 'nombre img usuario')
+    .skip(skip)
+    .limit(take)
     .populate('usuario', 'nombre email')
     .exec((error, hospitales) => {
 
@@ -24,11 +29,24 @@ app.get('/', (req, res, next) => {
             });
         }
 
-        res.status(200)
-        .json({
-            ok: true,
-            hospitales: hospitales
+        Hospital.count({}, (err, count) => {
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error contando hospitales',
+                    errors: err
+                });
+            }
+            
+            res.status(200)
+            .json({
+                ok: true,
+                totalRecords: count,
+                hospitales: hospitales
+            });
+
         });
+
     });
 });
 
