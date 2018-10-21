@@ -13,6 +13,7 @@ var Hospital = require('../models/hospital');
 app.get('/', (req, res, next) => {
 
     Hospital.find( { }, 'nombre img usuario')
+    .populate('usuario')
     .exec((error, hospitales) => {
 
         if(error) {
