@@ -56,7 +56,7 @@ app.put('/:id', mdAuthentication.verificaToken, (req, res) => {
 
         medico.nombre = body.nombre;
         medico.img = body.img;
-        medico.usuario = body.usuario;
+        medico.usuario = req.requestFrom._id;
         medico.hospital = body.hospital;
 
         medico.save((error, medicoActualizado) => {
@@ -87,7 +87,7 @@ app.post('/', mdAuthentication.verificaToken, (req, res) => {
     var medico = new Medico({
         nombre: body.nombre,
         img: body.img,
-        usuario: body.usuarioId,
+        usuario: req.requestFrom._id,
         hospital: body.hospitalId
     });
 
