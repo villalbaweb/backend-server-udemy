@@ -5,11 +5,53 @@ var Hospital = require('../models/hospital');
 var Medico = require('../models/medico');
 var Usuario = require('../models/usuario');
 
-app.get('/todo/:busqueda', (req, res, next) => {
+//==========================================================
+//              Busqueda por coleccion
+//==========================================================
+app.get('/coleccion/:tabla/:busqueda', (req, res) => {
+    var busqueda = req.params.busqueda;
+    var tabla = req.params.tabla;
 
+    var regexBusqueda = new RegExp(busqueda, 'i');
+
+    var busquedaEspecifica;
+    switch(tabla) {
+        case 'hospitales':
+            busquedaEspecifica = busquedaHospitales(regexBusqueda);
+            break;
+        case 'medicos':
+            busquedaEspecifica = busquedaMedicos(regexBusqueda);
+            break;
+        case 'usuarios':
+            busquedaEspecifica = busquedaUsuarios(regexBusqueda);
+            break;
+        default:
+            return res.status(400)
+            .json({
+                ok: false,
+                mensaje: 'Las colecciones disponibles son : usuarios, medicos y hospitales',
+                error: { message: 'Tipo de coleccion no valido'}
+            });
+    };
+    
+    busquedaEspecifica
+    .then( resultado => {
+        res.status(200)
+        .json({
+            ok: true,
+            [tabla]: resultado
+        });
+    });
+});
+
+//==========================================================
+//              Busqueda General
+//==========================================================
+app.get('/todo/:busqueda', (req, res, next) => {
+    
     var busqueda = req.params.busqueda;
     var regex = new RegExp(busqueda, 'i');
-
+    
     Promise.all([ 
         busquedaHospitales(regex), 
         busquedaMedicos(regex),
