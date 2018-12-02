@@ -7,7 +7,21 @@ var app = express();
 app.use(fileUpload());
 
 
-app.put('/', (req, res, next) => {
+app.put('/:tipo/:userId', (req, res, next) => {
+
+    var tipo = req.params.tipo;
+    var userId = req.params.userId;
+
+    // tipos de coleccion validos
+    var tiposValidos = ['hospitales', 'medicos', 'usuarios'];
+    if(tiposValidos.indexOf(tipo) < 0) {
+        return res.status(400)
+        .json({
+            ok: false,
+            mensaje: 'Tipo de archivo no valido',
+            error: { message: 'Debe seleccionar una coleccion valida: hospitales, medicos, usuarios'}
+        });
+    }
 
     // check if there is a file attached in the request
     if(!req.files) {
@@ -36,13 +50,29 @@ app.put('/', (req, res, next) => {
         });
     }
 
+    // Nombre de archivo unico
+    var nombreArchivoUnico = `${userId}-${new Date().getMilliseconds()}.${extensionArchivo}`;
 
-    res.status(200)
-    .json({
-        ok: true,
-        mensaje: 'Request OK',
-        extension: extensionArchivo
-    });
+    // Mover archivo a un path especifico
+    var path = `./uploads/${tipo}/${nombreArchivoUnico}`;
+
+    archivo.mv(path, err => {
+        if(err) {
+            return res.status(400)
+            .json({
+                ok: false,
+                mensaje: 'Error al mover archivo',
+                error: err
+            });
+        }
+
+        return res.status(200)
+        .json({
+            ok: true,
+            mensaje: 'Request OK',
+            extension: nombreArchivoUnico
+        });
+    })
 });
 
 module.exports = app;
