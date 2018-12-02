@@ -110,11 +110,61 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
     }
 
     if(tipo === 'medicos') {
+        Medico.findById(id, (err, medico) => {
+            var pathViejo = './uploads/medicos/' + medico.img;
 
+            // si existe elimina archivo anterior
+            if(fs.existsSync(pathViejo) && medico.img !== '') {
+                fs.unlink(pathViejo);
+            }
+
+            medico.img = nombreArchivo;
+            medico.save((err, medicoActualizado) => {
+                if(err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error al actualizar medico',
+                        errors: err
+                    });
+                }
+
+                return res.status(200)
+                .json({
+                    ok: true,
+                    mensaje: 'Medico ' + id + ' actualizado.',
+                    medico: medicoActualizado
+                });
+            });
+        });
     }
 
     if(tipo === 'hospitales') {
+        Hospital.findById(id, (err, hospital) => {
+            var pathViejo = './uploads/hospitales/' + hospital.img;
 
+            // si existe elimina archivo anterior
+            if(fs.existsSync(pathViejo) && hospital.img !== '') {
+                fs.unlink(pathViejo);
+            }
+
+            hospital.img = nombreArchivo;
+            hospital.save((err, hospitalActualizado) => {
+                if(err) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Error al actualizar hospital',
+                        errors: err
+                    });
+                }
+
+                return res.status(200)
+                .json({
+                    ok: true,
+                    mensaje: 'Hospital ' + id + ' actualizado.',
+                    hospital: hospitalActualizado
+                });
+            }); 
+        });
     }
 }
 
