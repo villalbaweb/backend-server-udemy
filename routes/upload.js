@@ -80,6 +80,24 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
 
     if(tipo === 'usuarios') {
         Usuario.findById(id, (err, usuario) => {
+
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar usuario',
+                    errors: err
+                });
+            }
+    
+            if(!usuario) {
+                return res.status(400)
+                .json({
+                    ok: false,
+                    mensaje: 'Error al buscar usuario',
+                    errors: { mensaje: `El usuario id: ${id} no existe` }
+                });
+            }
+
             var pathViejo = './uploads/usuarios/' + usuario.img;
 
             // si existe elimina archivo anterior
@@ -112,6 +130,23 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
 
     if(tipo === 'medicos') {
         Medico.findById(id, (err, medico) => {
+
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar medico',
+                    errors: err
+                });
+            }
+    
+            if(!medico) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al buscar medico',
+                    errors: { mensaje: `El medico id: ${id} no existe`}
+                });
+            }
+
             var pathViejo = './uploads/medicos/' + medico.img;
 
             // si existe elimina archivo anterior
@@ -141,6 +176,23 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
 
     if(tipo === 'hospitales') {
         Hospital.findById(id, (err, hospital) => {
+
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar hospital',
+                    errors: err
+                });
+            }
+    
+            if(!hospital) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error al buscar hospital',
+                    errors: { mensaje: `El hospital id: ${id} no existe`}
+                });
+            }
+            
             var pathViejo = './uploads/hospitales/' + hospital.img;
 
             // si existe elimina archivo anterior
