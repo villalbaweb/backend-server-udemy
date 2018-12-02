@@ -89,7 +89,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
 
             usuario.img = nombreArchivo;
             usuario.save((err, usuarioActualizado) => {
-
+                
                 if(err) {
                     return res.status(400).json({
                         ok: false,
@@ -97,7 +97,8 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                         errors: err
                     });
                 }
-
+                
+                usuarioActualizado.password = ';-)';
                 return res.status(200)
                 .json({
                     ok: true,
