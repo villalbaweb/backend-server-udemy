@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Server index config - This basically allow us to access a folder from the browser - not very good idea though
+// ie. localhost:3000/uploads/
 var serveIndex = require('serve-index');
 app.use(express.static(__dirname + '/'))
 app.use('/uploads', serveIndex(__dirname + '/uploads'));
