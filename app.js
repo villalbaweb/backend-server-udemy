@@ -11,6 +11,11 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// Server index config - This basically allow us to access a folder from the browser - not very good idea though
+var serveIndex = require('serve-index');
+app.use(express.static(__dirname + '/'))
+app.use('/uploads', serveIndex(__dirname + '/uploads'));
+
 // Importar rutas
 var appRoutes = require('./routes/app');
 var userRoutes = require('./routes/user');
