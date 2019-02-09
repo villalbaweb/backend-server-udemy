@@ -27,10 +27,91 @@ app.post('/google', (req, res) => {
     });
  
     ticket.then(data => {
-        res.status(200).json({
-            ok: true,
-            ticket: data.payload,
-            userid: data.payload.sub
+
+        Usuario.findOne( { email: data.payload.email }, (err, usuarioDB) => {
+
+
+            if(err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Error al buscar usuario',
+                    errors: err
+                });
+            }
+
+
+            if (usuarioDB) {
+
+                console.log(`User found...`, usuarioDB);
+
+                if (!usuarioDB.google) {
+                    return res.status(400).json({
+                        ok: false,
+                        mensaje: 'Debe usar autenticacion normal no Google',
+                        errors: err
+                    }); 
+                } else {
+
+                    console.log('User found and proper Google SIgn in');
+                    // usuario existe y entro password correcto, generar JWT
+                    usuarioDB.password = ':-)';
+                    var token = jwt.sign(
+                        { 
+                            usuario: usuarioDB 
+                        }, 
+                        JWTSecret, 
+                        { 
+                            expiresIn: 14400 
+                        }
+                    ); //expira en 4 horas
+                    
+                    return res.status(200).json({
+                        ok: true,
+                        token: token,
+                        usuario: usuarioDB,
+                        id: usuarioDB.id
+                    });
+                }
+            } else {
+                // usuario no existe hay que crearlo
+                console.log(`User NOt found...`);
+
+                var usuario = new Usuario();
+
+                usuario.nombre = data.payload.name;
+                usuario.email = data.payload.email;
+                usuario.img = data.payload.img;
+                usuario.google = true;
+                usuario.password = ':)';
+
+                usuario.save((err, usuarioDB) => {
+
+                    if(err) {
+                        return res.status(400).json({
+                            ok: false,
+                            mensaje: 'Error al crear usuario',
+                            errors: err
+                        });
+                    }
+
+                    var token = jwt.sign(
+                        { 
+                            usuario: usuarioDB 
+                        }, 
+                        JWTSecret, 
+                        { 
+                            expiresIn: 14400 
+                        }
+                    ); //expira en 4 horas
+                    
+                    return res.status(200).json({
+                        ok: true,
+                        token: token,
+                        usuario: usuarioDB,
+                        id: usuarioDB.id
+                    });
+                });
+            }
         });
     }).catch(err => {
         if (err) {
