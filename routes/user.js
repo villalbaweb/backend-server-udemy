@@ -103,7 +103,7 @@ app.put('/:id', mdAuthentication.verificaToken, (req, res) => {
 //==========================================================
 //              Guardar nuevo usuario
 //==========================================================
-app.post('/', mdAuthentication.verificaToken ,(req, res) => {
+app.post('/', (req, res) => {
 
     // retrieving request's body using body-parser
     var body = req.body;
