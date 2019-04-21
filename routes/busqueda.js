@@ -106,7 +106,7 @@ function busquedaUsuarios(regex) {
         .or([{'nombre': regex}, {'email': regex}])
         .exec((err, usuario)=> {
             if(err){
-                reject('Error al cargar medicos', err);
+                reject('Error al cargar usuarios', err);
             } else {
                 resolve(usuario);
             }
