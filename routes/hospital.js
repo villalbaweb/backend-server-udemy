@@ -50,6 +50,43 @@ app.get('/', (req, res, next) => {
     });
 });
 
+//==========================================================
+//              Obtener hospital por id
+//==========================================================
+app.get('/:id', (req, res) => {
+
+    var id = req.params.id;
+
+    Hospital.findById(id)
+    .populate('usuario', 'nombre img email')
+    .exec((error, hospital) => {
+
+        if(error) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error buscando hospital',
+                errors: error
+            });
+        }
+
+        if(!hospital) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Hospital con id ' + id + ' no existe',
+                errors: {
+                    message: 'No existe un hospital con ese ID'
+                }
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            hospital: hospital
+        });
+
+    });
+});
+
 
 //==========================================================
 //              Acrualizar hospital
