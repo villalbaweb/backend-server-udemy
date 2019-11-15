@@ -101,8 +101,8 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
             var pathViejo = './uploads/usuarios/' + usuario.img;
 
             // si existe elimina archivo anterior
-            if(fs.existsSync(pathViejo) && usuario.img !== '') {
-                fs.unlink(pathViejo);
+            if(fs.existsSync(pathViejo, (error) => {}) && usuario.img !== '') {
+                fs.unlink(pathViejo, (error) => {});
             }
 
             usuario.img = nombreArchivo;
@@ -150,8 +150,8 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
             var pathViejo = './uploads/medicos/' + medico.img;
 
             // si existe elimina archivo anterior
-            if(fs.existsSync(pathViejo) && medico.img !== '') {
-                fs.unlink(pathViejo);
+            if(fs.existsSync(pathViejo, (error) => {}) && medico.img !== '') {
+                fs.unlink(pathViejo, (error) => {});
             }
 
             medico.img = nombreArchivo;
@@ -184,7 +184,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                     errors: err
                 });
             }
-    
+            
             if(!hospital) {
                 return res.status(400).json({
                     ok: false,
@@ -196,10 +196,10 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
             var pathViejo = './uploads/hospitales/' + hospital.img;
 
             // si existe elimina archivo anterior
-            if(fs.existsSync(pathViejo) && hospital.img !== '') {
-                fs.unlink(pathViejo);
+            if(fs.existsSync(pathViejo, (error) => {}) && hospital.img !== '') {
+                fs.unlink(pathViejo, (error) => {});
             }
-
+            
             hospital.img = nombreArchivo;
             hospital.save((err, hospitalActualizado) => {
                 if(err) {
@@ -209,7 +209,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                         errors: err
                     });
                 }
-
+                
                 return res.status(200)
                 .json({
                     ok: true,
